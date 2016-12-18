@@ -107,6 +107,25 @@ We communicate via [issues](https://github.com/ethjs/ethjs/issues) and [pull req
 - [Code of Conduct](CODE_OF_CONDUCT.md)
 - [License](https://raw.githubusercontent.com/ethjs/ethjs/master/LICENSE)
 
+## Our Relationship with Ethereum & EthereumJS
+
+We would like to mention that we are not in any way affiliated with the Ethereum Foundation or `ethereumjs`. However, we love the work they do and work with them often to make Ethereum great! Our aim is to support the Ethereum ecosystem with a policy of diversity, modularity, simplicity, transparency, clarity, optimization and extensibility.
+
+Many of our modules use code from `web3.js` and the `ethereumjs-` repositories. We thank the authors where we can in the relevant repositories. We use their code carefully, and make sure all test coverage is ported over and where possible, expanded on.
+
+## Special Thanks
+
+`ethjs` was built by a strong community of Ethereum developers. A special thanks to:
+
+- [Fabian Vogelsteller](https://twitter.com/feindura?lang=en) - for his work on `Mist` and `web3.js`
+- [Tim Coulter](https://github.com/tcoulter) - for his work on `TestRPC` and `Truffle`
+- [Aaron Davis](https://github.com/kumavis) - for his guidence and work on `MetaMask` and `ethereumjs`
+- [Richard Moore](https://github.com/ricmoo) - for his work on `ethers-io` and `ethers-wallet` from which so much of `ethjs` is build from
+- [Karl Floersch](https://twitter.com/karl_dot_tech?lang=en) - for his guidence and support
+- [Martin Betsy](https://github.com/wanderer) - for his work on `ethereumjs`
+- [Alex Beregszaszi](https://github.com/axic) - for his work on `ethereumjs`
+- [Vitalik Buterin](https://twitter.com/VitalikButerin) - for creating `Ethereum`
+
 ## Licence
 
 This project is licensed under the MIT license, Copyright (c) 2016 Nick Dodson. For more information see LICENSE.md.
