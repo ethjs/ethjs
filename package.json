@@ -1,7 +1,7 @@
 {
   "name": "ethjs",
   "version": "0.1.0",
-  "description": "A highly experimental web3 like object.",
+  "description": "A highly optimised, light-weight JS utility for Ethereum",
   "main": "lib/index.js",
   "files": [
     "dist",
