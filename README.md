@@ -37,7 +37,7 @@
 
 <br />
 
-A highly optimised, light-weight JS utility for [Ethereum](https://www.ethereum.org/) based on [`web3.js`](https://github.com/ethereum/web3.js), but lighter, async only and using `BN.js`.
+A highly optimised, light-weight JS utility for [Ethereum](https://www.ethereum.org/) based on [`web3.js`](https://github.com/ethereum/web3.js), but lighter, async only and using `BN.js`. Only **103 kB** minified!
 
 ## Install
 
