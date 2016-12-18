@@ -122,7 +122,7 @@ Many of our modules use code from `web3.js` and the `ethereumjs-` repositories. 
 - [Aaron Davis](https://github.com/kumavis) - for his guidence and work on `MetaMask` and `ethereumjs`
 - [Richard Moore](https://github.com/ricmoo) - for his work on `ethers-io` and `ethers-wallet` from which so much of `ethjs` is build from
 - [Karl Floersch](https://twitter.com/karl_dot_tech?lang=en) - for his guidence and support
-- [Martin Betsy](https://github.com/wanderer) - for his work on `ethereumjs`
+- [Martin B.](https://github.com/wanderer) - for his work on `ethereumjs`
 - [Alex Beregszaszi](https://github.com/axic) - for his work on `ethereumjs`
 - [Vitalik Buterin](https://twitter.com/VitalikButerin) - for creating `Ethereum`
 
