@@ -137,7 +137,7 @@ See: [`ethjs-filter`](https://github.com/ethjs/ethjs-filter), [`Ethereum RPC Spe
 
 ## Big Numbers/Number Handling
 
-Ethereum uses very large numbers for handling currency amounts and number storage on the blockchain. Javascript and the JVM (Javascript Virtual Machine) can only handle up to integer `9007199254740991` safely without loosing precision. Because of this, we have to use a module called `bn.js` to handle the very large numbers and amounts often used in Ethereum. Note, [`bn.js`](https://github.com/indutny/bn.js) "BN" is not the same as [`bignumber.js`](https://github.com/MikeMcl/bignumber.js) "BigNumber" used by web3. They are two different libraries. We use [`bn.js`](https://github.com/indutny/bn.js) because it does not support any decimal numbers, and can manage absolute precision of large integers (this lib is also used by `ethereumjs`).
+Ethereum uses very large numbers for handling currency amounts and number storage on the blockchain. The JVM (Javascript Virtual Machine) can only handle up to integer `9007199254740991` safely without loosing precision. Because of this, we have to use a module called `bn.js` to handle the very large numbers and amounts often used in Ethereum. Note, [`bn.js`](https://github.com/indutny/bn.js) "BN" is not the same as [`bignumber.js`](https://github.com/MikeMcl/bignumber.js) "BigNumber" used by web3. They are two different libraries. We use [`bn.js`](https://github.com/indutny/bn.js) because it does not support any decimal numbers, and can manage absolute precision of large integers (this lib is also used by `ethereumjs`).
 
 There are **no decimal numbers on the blockchain**. All numbers must be converted to integers and then to hex format for chain storage and use. You must be very careful when handling large numbers. When working with Ethereum number values, try to avoid or never use actual Number type values (i.e. `value: 45038000000,`) or decimal numbers (`value: 1000.003`). This may lead to incorrect values conversion, number precision loss or worse, all your or your users ether!
 
@@ -2711,7 +2711,7 @@ Eth(...);
 Minified: **103 kB**.
 
 ```
-Hash: b267c64f72c936248871                                                            
+Hash: b267c64f72c936248871
 Version: webpack 2.1.0-beta.15
 Time: 928ms
        Asset    Size  Chunks             Chunk Names
@@ -2720,7 +2720,7 @@ ethjs.js.map  291 kB       0  [emitted]  main
   [24] multi main 28 bytes {0} [built]
     + 24 hidden modules
 
-Hash: b7b0fe38a80ebbca42e2                                                            
+Hash: b7b0fe38a80ebbca42e2
 Version: webpack 2.1.0-beta.15
 Time: 3373ms
        Asset    Size  Chunks             Chunk Names

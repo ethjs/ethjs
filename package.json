@@ -1,7 +1,7 @@
 {
   "name": "ethjs",
-  "version": "0.1.0",
-  "description": "A highly optimised, light-weight JS utility for Ethereum",
+  "version": "0.1.1",
+  "description": "A light-weight, highly optimised JS utility for Ethereum",
   "main": "lib/index.js",
   "files": [
     "dist",
@@ -33,7 +33,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/ethjs/ethjs-filter.git"
+    "url": "git+ssh://git@github.com/ethjs/ethjs.git"
   },
   "dependencies": {
     "ethjs-contract": "0.1.5",
