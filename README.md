@@ -89,7 +89,7 @@ You'll find more detailed information on using `ethjs` and tailoring it to your 
 
 There is always a lot of work to do, and will have many rules to maintain. So please help out in any way that you can:
 
-- Create, enhance, and debug ethjs rules (see our guide to ["Working on rules"](./github/CONTRIBUTING.md)).
+- Create, enhance, and debug ethjs rules (see our guide to ["Working on rules"](./.github/CONTRIBUTING.md)).
 - Improve documentation.
 - Chime in on any open issue or pull request.
 - Open new issues about your ideas for making `ethjs` better, and pull requests to show us how your idea works.
