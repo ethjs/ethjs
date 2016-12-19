@@ -7550,9 +7550,9 @@ Eth.prototype.log = function log(message) {
 Eth.prototype.sendAsync = function sendAsync(opts, cb) {
   var self = this;
   self.idCounter = self.idCounter % self.options.max;
-
   self.currentProvider.sendAsync(createPayload(opts, self.idCounter++), function (err, response) {
-    if (err || response.error) return cb(new Error('[ethjs-query] ' + (response.error && 'rpc' || '') + ' error with payload ' + JSON.stringify(opts, null, 0) + ' ' + JSON.stringify(err || response.error, null, 0)));
+    var responseObject = response || {};
+    if (err || responseObject.error) return cb(new Error('[ethjs-query] ' + (responseObject.error && 'rpc' || '') + ' error with payload ' + JSON.stringify(opts, null, 0) + ' ' + JSON.stringify(err || response.error, null, 0)));
     return cb(null, response.result);
   });
 };
