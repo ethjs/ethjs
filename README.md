@@ -51,21 +51,30 @@ npm install --save ethjs
 
 ```js
 const Eth = require('ethjs');
-const eth = new Eth(Eth.HttpProvider('https://ropsten.infura.io'));
+const eth = new Eth(new Eth.HttpProvider('https://ropsten.infura.io'));
 
 eth.getBlockByNumber(45300, (err, block) => {
-  console.log(err, block);
-});
-
-const abi = [{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"}];
-
-const token = eth.contract(abi).at('0x6e0E0e02377Bc1d90E8a7c21f12BA385C2C35f78');
-
-token.totalSupply().then((totalSupply) => {
-  console.log(totalSupply.toString(10));
+  // result null { ...block data... }
 });
 
 const etherValue = Eth.toWei(72, 'ether');
+
+// result <BN ...>
+
+const tokenABI = [{
+  "constant": true,
+  "inputs": [],
+  "name": "totalSupply",
+  "outputs":[{"name": "","type": "uint256"}],
+  "payable": false,
+  "type": "function",
+}];
+
+const token = eth.contract(tokenABI).at('0x6e0E0e02377Bc1d90E8a7c21f12BA385C2C35f78');
+
+token.totalSupply().then((totalSupply) => {
+  // result <BN ...>  4500000
+});
 ```
 
 ## About
@@ -84,6 +93,7 @@ You'll find more detailed information on using `ethjs` and tailoring it to your 
 
 - [User guide](docs/user-guide.md) - Usage, configuration, FAQ and complementary tools.
 - [Developer guide](docs/developer-guide.md) - Contributing to `ethjs` and writing your own code and coverage.
+- [Examples](http://github.com/ethjs/examples) - Examples of `ethjs` in use.
 
 ## Help out
 
