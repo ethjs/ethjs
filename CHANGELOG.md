@@ -1,3 +1,7 @@
+# 0.1.5 -- update unit formatting
+
+1. Update unit. formatting
+
 # 0.1.4 -- bn formatting
 
 1. BN formatting fix
