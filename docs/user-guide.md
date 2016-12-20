@@ -12,21 +12,30 @@ npm install --save ethjs
 
 ```js
 const Eth = require('ethjs');
-const eth = new Eth(Eth.HttpProvider('https://ropsten.infura.io'));
+const eth = new Eth(new Eth.HttpProvider('https://ropsten.infura.io'));
 
 eth.getBlockByNumber(45300, (err, block) => {
-  console.log(err, block);
-});
-
-const abi = [{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"}];
-
-const token = eth.contract(abi).at('0x6e0E0e02377Bc1d90E8a7c21f12BA385C2C35f78');
-
-token.totalSupply().then((totalSupply) => {
-  console.log(totalSupply.toString(10));
+  // result null { ...block data... }
 });
 
 const etherValue = Eth.toWei(72, 'ether');
+
+// result <BN ...>
+
+const tokenABI = [{
+  "constant": true,
+  "inputs": [],
+  "name": "totalSupply",
+  "outputs":[{"name": "","type": "uint256"}],
+  "payable": false,
+  "type": "function",
+}];
+
+const token = eth.contract(tokenABI).at('0x6e0E0e02377Bc1d90E8a7c21f12BA385C2C35f78');
+
+token.totalSupply().then((totalSupply) => {
+  // result <BN ...>  4500000
+});
 ```
 
 ## Welcome
@@ -889,7 +898,7 @@ Returns a list of addresses owned by client.
 
 none.
 
-Result **[String]**.
+Result an **Array** of strings.
 
 ```js
 const Eth = require('ethjs');
@@ -1379,7 +1388,7 @@ Returns information about a block by hash.
 -   `bool_1` **Boolean** -- A boolean value "true" or "false".
 
 
-Result **"Block"**.
+Result Block **Object**.
 
 ```js
 const Eth = require('ethjs');
@@ -1431,7 +1440,7 @@ Returns information about a block by block number.
 -   `bool_1` **Boolean** -- A boolean value "true" or "false".
 
 
-Result **"Block"**.
+Result Block **Object**.
 
 ```js
 const Eth = require('ethjs');
@@ -1482,7 +1491,7 @@ Returns the information about a transaction requested by transaction hash.
 -   `hash_0` **String** -- A 32 byte prefixed alphanumeric hex string.
 
 
-Result **"Transaction"**.
+Result Transaction **Object**.
 
 ```js
 const Eth = require('ethjs');
@@ -1526,7 +1535,7 @@ Returns information about a transaction by block hash and transaction index posi
 -   `number_1` **BN** -- A number quantity.
 
 
-Result **"Transaction"**.
+Result Transaction **Object**.
 
 ```js
 const Eth = require('ethjs');
@@ -1570,7 +1579,7 @@ Returns information about a transaction by block number and transaction index po
 -   `number_1` **BN** -- A number quantity.
 
 
-Result **"Transaction"**.
+Result Transaction **Object**.
 
 ```js
 const Eth = require('ethjs');
@@ -1613,7 +1622,7 @@ Returns the receipt of a transaction by transaction hash.
 -   `hash_0` **String** -- A 32 byte prefixed alphanumeric hex string.
 
 
-Result **"Receipt"**.
+Result receipt **Object**.
 
 ```js
 const Eth = require('ethjs');
@@ -1663,7 +1672,7 @@ Returns information about a uncle of a block by hash and uncle index position.
 -   `number_1` **BN** -- A number quantity.
 
 
-Result **"Block"**.
+Result Block **Object**.
 
 ```js
 const Eth = require('ethjs');
@@ -1715,7 +1724,7 @@ Returns information about a uncle of a block by number and uncle index position.
 -   `number_1` **BN** -- A number quantity.
 
 
-Result **"Block"**.
+Result Block **Object**.
 
 ```js
 const Eth = require('ethjs');
@@ -1765,7 +1774,7 @@ Returns a list of available compilers in the client.
 
 none.
 
-Result **[String]**.
+Result an **Array** of strings.
 
 ```js
 const Eth = require('ethjs');
@@ -2016,7 +2025,7 @@ Polling method for a filter, which returns an array of logs which occurred since
 -   `number_0` **BN** -- A number quantity.
 
 
-Result **["FilterChange"]**.
+Result an **Array** of filter change objects..
 
 ```js
 const Eth = require('ethjs');
@@ -2057,7 +2066,7 @@ Returns an array of all logs matching filter with given id.
 -   `number_0` **BN** -- A number quantity.
 
 
-Result **["FilterChange"]**.
+Result an **Array** of filter change objects..
 
 ```js
 const Eth = require('ethjs');
@@ -2143,7 +2152,7 @@ Returns the hash of the current block, the seedHash, and the boundary condition 
 
 none.
 
-Result **[String]**.
+Result an **Array** of strings.
 
 ```js
 const Eth = require('ethjs');

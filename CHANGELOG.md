@@ -1,3 +1,7 @@
+# 0.1.4 -- bn formatting
+
+1. BN formatting fix
+
 # 0.1.3 -- upgrade ethjs-query
 
 1. Upgraded ethjs-query
