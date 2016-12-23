@@ -63,7 +63,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 24);
+/******/ 	return __webpack_require__(__webpack_require__.s = 25);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -82,8 +82,8 @@ return /******/ (function(modules) { // webpackBootstrap
 'use strict'
 
 var base64 = __webpack_require__(10)
-var ieee754 = __webpack_require__(18)
-var isArray = __webpack_require__(19)
+var ieee754 = __webpack_require__(19)
+var isArray = __webpack_require__(20)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -5295,7 +5295,7 @@ function isnan (val) {
   };
 })(typeof module === 'undefined' || module, this);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(22)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
 
 /***/ },
 /* 2 */
@@ -6044,7 +6044,7 @@ module.exports = function numberToBN(arg) {
   }
 }(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(21), __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(22), __webpack_require__(8)))
 
 /***/ },
 /* 5 */
@@ -6284,7 +6284,7 @@ var EthQuery = __webpack_require__(16);
 var EthFilter = __webpack_require__(6);
 var EthContract = __webpack_require__(13);
 var HttpProvider = __webpack_require__(15);
-var unit = __webpack_require__(17);
+var unit = __webpack_require__(18);
 var keccak256 = __webpack_require__(4).keccak_256;
 var toBN = __webpack_require__(3);
 var BN = __webpack_require__(1);
@@ -7182,7 +7182,7 @@ module.exports = EthContract;
 "use strict";
 'use strict';
 
-var schema = __webpack_require__(20);
+var schema = __webpack_require__(21);
 var util = __webpack_require__(2);
 var numberToBN = __webpack_require__(3);
 var stripHexPrefix = __webpack_require__(5);
@@ -7443,7 +7443,7 @@ module.exports = {
  */
 
 // workaround to use httpprovider in different envs
-var XHR2 = __webpack_require__(23);
+var XHR2 = __webpack_require__(24);
 
 /**
  * InvalidResponseError helper for invalid errors.
@@ -7521,6 +7521,7 @@ module.exports = HttpProvider;
 'use strict';
 
 var format = __webpack_require__(14);
+var EthRPC = __webpack_require__(17);
 
 module.exports = Eth;
 
@@ -7538,26 +7539,15 @@ function Eth(provider, options) {
   self.options = Object.assign({
     debug: optionsObject.debug || false,
     logger: optionsObject.logger || console,
-    jsonSpace: optionsObject.jsonSpace || 0,
-    max: optionsObject.max || 9999999999999
+    jsonSpace: optionsObject.jsonSpace || 0
   });
-  self.idCounter = Math.floor(Math.random() * self.options.max);
-  self.currentProvider = provider;
+  self.rpc = new EthRPC(provider);
+  self.setProvider = self.rpc.setProvider;
 }
 
 Eth.prototype.log = function log(message) {
   var self = this;
   if (self.options.debug) self.options.logger.log('[ethjs-query log] ' + message);
-};
-
-Eth.prototype.sendAsync = function sendAsync(opts, cb) {
-  var self = this;
-  self.idCounter = self.idCounter % self.options.max;
-  self.currentProvider.sendAsync(createPayload(opts, self.idCounter++), function (err, response) {
-    var responseObject = response || {};
-    if (err || responseObject.error) return cb(new Error('[ethjs-query] ' + (responseObject.error && 'rpc' || '') + ' error with payload ' + JSON.stringify(opts, null, 0) + ' ' + JSON.stringify(err || response.error, null, 0)));
-    return cb(null, response.result);
-  });
 };
 
 Object.keys(format.schema.methods).forEach(function (rpcMethodName) {
@@ -7623,11 +7613,82 @@ function generateFnFor(method, methodObject) {
         return cb(new Error('[ethjs-query] while formatting inputs \'' + JSON.stringify(args, null, self.options.jsonSpace) + '\' for method \'' + protoMethod + '\' error: ' + formattingError));
       }
 
-      return self.sendAsync({ method: method, params: inputs }, cb);
+      return self.rpc.sendAsync({ method: method, params: inputs }, cb);
     });
   };
 }
 
+/***/ },
+/* 17 */
+/***/ function(module, exports) {
+
+"use strict";
+'use strict';
+
+module.exports = EthRPC;
+
+/**
+ * Constructs the EthRPC instance
+ *
+ * @method EthRPC
+ * @param {Object} cprovider the eth rpc provider web3 standard..
+ * @param {Object} options the options, if any
+ * @returns {Object} ethrpc instance
+ */
+function EthRPC(cprovider, options) {
+  var self = this;
+  var optionsObject = options || {};
+
+  if (!(this instanceof EthRPC)) {
+    throw new Error('[ethjs-rpc] the EthRPC object requires the "new" flag in order to function normally (i.e. `const eth = new EthRPC(provider);`).');
+  }
+
+  self.options = Object.assign({
+    jsonSpace: optionsObject.jsonSpace || 0,
+    max: optionsObject.max || 9999999999999
+  });
+  self.idCounter = Math.floor(Math.random() * self.options.max);
+  self.setProvider = function (provider) {
+    if (typeof provider !== 'object') {
+      throw new Error('[ethjs-rpc] the EthRPC object requires that the first input \'provider\' must be an object, got \'' + typeof provider + '\' (i.e. \'const eth = new EthRPC(provider);\')');
+    }
+
+    self.currentProvider = provider;
+  };
+  self.setProvider(cprovider);
+}
+
+/**
+ * The main send async method
+ *
+ * @method sendAsync
+ * @param {Object} payload the rpc payload object
+ * @param {Function} cb the async standard callback
+ * @callback {Object|Array|Boolean|String} vary result instance output
+ */
+EthRPC.prototype.sendAsync = function sendAsync(payload, cb) {
+  var self = this;
+  self.idCounter = self.idCounter % self.options.max;
+  self.currentProvider.sendAsync(createPayload(payload, self.idCounter++), function (err, response) {
+    var responseObject = response || {};
+
+    if (err || responseObject.error) {
+      var payloadErrorMessage = '[ethjs-rpc] ' + (responseObject.error && 'rpc' || '') + ' error with payload ' + JSON.stringify(payload, null, self.options.jsonSpace) + ' ' + (err || JSON.stringify(responseObject.error, null, self.options.jsonSpace));
+      return cb(new Error(payloadErrorMessage), null);
+    }
+
+    return cb(null, responseObject.result);
+  });
+};
+
+/**
+ * A simple create payload method
+ *
+ * @method createPayload
+ * @param {Object} data the rpc payload data
+ * @param {String} id the rpc data payload ID
+ * @returns {Object} payload the completed payload object
+ */
 function createPayload(data, id) {
   return Object.assign({
     id: id,
@@ -7637,7 +7698,7 @@ function createPayload(data, id) {
 }
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7811,7 +7872,7 @@ module.exports = {
 };
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -7901,7 +7962,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports) {
 
 var toString = {}.toString;
@@ -7912,7 +7973,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -8518,7 +8579,7 @@ module.exports = {
 };
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports) {
 
 // shim for using process in browser
@@ -8704,7 +8765,7 @@ process.umask = function() { return 0; };
 
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports) {
 
 module.exports = function(module) {
@@ -8730,14 +8791,14 @@ module.exports = function(module) {
 
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports) {
 
 module.exports = XMLHttpRequest;
 
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(9);
