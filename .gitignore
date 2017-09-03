@@ -3,6 +3,9 @@ node_modules
 dist/stats.json
 coverage
 lib
+!src/lib
+!src/lib/getTransactionSuccess.js
+!getTransactionSuccess.js
 
 # Cruft
 .DS_Store

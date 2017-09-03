@@ -12,6 +12,8 @@ describe('eth.js', () => {
 
       assert.equal(typeof Eth, 'function');
       assert.equal(typeof eth, 'object');
+      assert.equal(typeof eth.currentProvider, 'object');
+      assert.equal(typeof eth.setProvider, 'function');
     });
 
     it('should throw under invalid construction', () => {
