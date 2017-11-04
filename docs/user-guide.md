@@ -284,7 +284,7 @@ eth.accounts().then((accounts) => {
 
 [index.js:ethjs-contract](../../../blob/master/src/index.js "Source code on GitHub")
 
-The contract factory has two methods, 'at' and 'new' which can be used to create the contract instane. the `at` method is used to create a `Contract` instance for a contract that has already been deployed to the Ethereum blockchain (testnet, livenet, local or otherwise). The `new` method is used to deploy the contract to the current chain.
+The contract factory has two methods, 'at' and 'new' which can be used to create the contract instance. The `at` method is used to create a `Contract` instance for a contract that has already been deployed to the Ethereum blockchain (testnet, livenet, local or otherwise). The `new` method is used to deploy the contract to the current chain.
 
 **Parameters**
 
@@ -323,7 +323,7 @@ eth.accounts().then((accounts) => {
 
 [index.js:ethjs-contract](../../../blob/master/src/index.js "Source code on GitHub")
 
-The contract factory has two methods, 'at' and 'new' which can be used to create the `Contract` instane.
+The contract factory has two methods, 'at' and 'new' which can be used to create the `Contract` instance.
 
 **Parameters**
 
