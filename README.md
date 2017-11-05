@@ -47,6 +47,14 @@ Only **103 kB** minified!
 npm install --save ethjs
 ```
 
+## CDN
+
+```
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/ethjs@0.3.0/dist/ethjs.min.js"></script>
+```
+
+Note, exports to `window.Eth` global.
+
 ## Usage
 
 ```js
