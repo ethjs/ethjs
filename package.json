@@ -29,7 +29,7 @@
     "test": "mocha ./src/tests/**/*.js -R spec --timeout 2000000",
     "test:lib": "mocha ./lib/tests/**/*.js -R spec --timeout 2000000",
     "test-travis": "node ./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- src/tests/**/*.js -R spec --timeout 2000000",
-    "coveralls": "npm run test-travis && cat ./coverage/lcov.info | coveralls"
+    "coveralls": "npm run test-travis && coveralls < coverage/lcov.info"
   },
   "repository": {
     "type": "git",
