@@ -512,7 +512,7 @@ Used to manage Ethereum event listening and filtering.
 const Eth = require('ethjs');
 const eth = new Eth(new HttpProvider('http://localhost:8545'));
 
-const filter = new eth.filters.Filter({ delay: 300 })
+const filter = new eth.filter.Filter({ delay: 300 })
 .new({ toBlock: 500 })
 .then((result) => {
   // result <BigNumber ...> filterId
