@@ -1,51 +1,7 @@
 {
-  "name": "ethjs",
-  "version": "0.2.8",
-  "description": "A light-weight, highly optimised JS utility for Ethereum",
-  "main": "lib/index.js",
-  "files": [
-    "dist",
-    "internals",
-    "lib",
-    "src"
-  ],
-  "scripts": {
-    "start": "npm test",
-    "release": "npmpub",
-    "pretest": "npm run lint",
-    "prepublish": "npm run build",
-    "prebuild": "npm run build:clean && npm run test",
-    "build:clean": "npm run test:clean && rimraf ./dist",
-    "build:commonjs": "cross-env BABEL_ENV=commonjs babel src --out-dir lib --copy-files",
-    "build:umd": "cross-env BABEL_ENV=commonjs NODE_ENV=development webpack --config ./internals/webpack/webpack.config.js --progress",
-    "build:umd:min": "cross-env BABEL_ENV=commonjs NODE_ENV=production webpack --config ./internals/webpack/webpack.config.js --progress",
-    "build:stats": "cross-env BABEL_ENV=commonjs NODE_ENV=production webpack --config ./internals/webpack/webpack.config.js --progress --profile --json > dist/stats.json",
-    "build": "npm run build:commonjs && npm run test:lib && npm run build:umd && npm run build:umd:min",
-    "lint": "npm run lint:js",
-    "lint:eslint": "eslint --ignore-path .gitignore --ignore-pattern **/**.min.js",
-    "lint:js": "npm run lint:eslint -- . ",
-    "lint:staged": "lint-staged",
-    "test:clean": "rimraf ./coverage",
-    "test": "mocha ./src/tests/**/*.js -R spec --timeout 2000000",
-    "test:lib": "mocha ./lib/tests/**/*.js -R spec --timeout 2000000",
-    "test-travis": "node ./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- src/tests/**/*.js -R spec --timeout 2000000",
-    "coveralls": "npm run test-travis && coveralls < coverage/lcov.info"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/ethjs/ethjs.git"
-  },
-  "dependencies": {
-    "ethjs-contract": "0.1.9",
-    "ethjs-filter": "0.1.5",
-    "ethjs-provider-http": "0.1.6",
-    "bn.js": "4.11.6",
-    "ethjs-query": "0.2.6",
-    "number-to-bn": "1.7.0",
-    "ethjs-abi": "0.2.0",
-    "ethjs-unit": "0.1.6",
-    "ethjs-util": "0.1.3",
-    "js-sha3": "0.5.5"
+  "author": {
+    "name": "Nick Dodson",
+    "email": "nick.dodson@consensys.net"
   },
   "babel": {
     "plugins": [
@@ -113,6 +69,24 @@
       }
     }
   },
+  "bugs": {
+    "url": "https://github.com/ethjs/ethjs-filter/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "bn.js": "4.11.6",
+    "ethjs-abi": "0.2.0",
+    "ethjs-contract": "0.1.9",
+    "ethjs-filter": "0.1.5",
+    "ethjs-provider-http": "0.1.6",
+    "ethjs-query": "0.3.4",
+    "ethjs-unit": "0.1.6",
+    "ethjs-util": "0.1.3",
+    "js-sha3": "0.5.5",
+    "number-to-bn": "1.7.0"
+  },
+  "deprecated": false,
+  "description": "A light-weight, highly optimised JS utility for Ethereum",
   "devDependencies": {
     "babel-cli": "6.18.0",
     "babel-core": "6.18.2",
@@ -141,19 +115,18 @@
     "babel-plugin-transform-object-rest-spread": "6.19.0",
     "babel-register": "6.18.0",
     "chai": "3.5.0",
-    "cross-env": "1.0.7",
-    "ethjs-account": "0.1.0",
-    "ethjs-signer": "0.1.0",
     "check-es3-syntax-cli": "0.1.3",
     "coveralls": "2.11.9",
+    "cross-env": "1.0.7",
     "eslint": "2.10.1",
-    "web3": "0.17.0-beta",
     "eslint-config-airbnb": "9.0.1",
     "eslint-import-resolver-webpack": "0.2.4",
     "eslint-plugin-import": "1.8.0",
     "eslint-plugin-jsx-a11y": "1.2.0",
     "eslint-plugin-react": "5.1.1",
     "ethereumjs-testrpc": "3.0.2",
+    "ethjs-account": "0.1.0",
+    "ethjs-signer": "0.1.0",
     "eventsource-polyfill": "0.9.6",
     "istanbul": "0.4.5",
     "json-loader": "0.5.4",
@@ -161,25 +134,12 @@
     "mocha": "3.1.2",
     "pre-commit": "1.1.3",
     "rimraf": "2.3.4",
+    "web3": "0.17.0-beta",
     "webpack": "2.1.0-beta.15"
   },
   "engines": {
-    "npm": ">=3",
-    "node": ">=6.5.0"
-  },
-  "keywords": [
-    "ethereum",
-    "events",
-    "rpc"
-  ],
-  "author": "Nick Dodson <nick.dodson@consensys.net>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/ethjs/ethjs-filter/issues"
-  },
-  "homepage": "https://github.com/ethjs/ethjs-filter#readme",
-  "lint-staged": {
-    "lint:eslint": "*.js"
+    "node": ">=6.5.0",
+    "npm": ">=3"
   },
   "eslintConfig": {
     "parser": "babel-eslint",
@@ -217,5 +177,50 @@
       ]
     }
   },
-  "pre-commit": "build"
+  "files": [
+    "dist",
+    "internals",
+    "lib",
+    "src"
+  ],
+  "homepage": "https://github.com/ethjs/ethjs-filter#readme",
+  "keywords": [
+    "ethereum",
+    "events",
+    "rpc"
+  ],
+  "license": "MIT",
+  "lint-staged": {
+    "lint:eslint": "*.js"
+  },
+  "main": "lib/index.js",
+  "name": "ethjs",
+  "pre-commit": "build",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/ethjs/ethjs.git"
+  },
+  "scripts": {
+    "build": "npm run build:commonjs && npm run test:lib && npm run build:umd && npm run build:umd:min",
+    "build:clean": "npm run test:clean && rimraf ./dist",
+    "build:commonjs": "cross-env BABEL_ENV=commonjs babel src --out-dir lib --copy-files",
+    "build:stats": "cross-env BABEL_ENV=commonjs NODE_ENV=production webpack --config ./internals/webpack/webpack.config.js --progress --profile --json > dist/stats.json",
+    "build:umd": "cross-env BABEL_ENV=commonjs NODE_ENV=development webpack --config ./internals/webpack/webpack.config.js --progress",
+    "build:umd:min": "cross-env BABEL_ENV=commonjs NODE_ENV=production webpack --config ./internals/webpack/webpack.config.js --progress",
+    "coveralls": "npm run test-travis && cat ./coverage/lcov.info | coveralls",
+    "lint": "npm run lint:js",
+    "lint:eslint": "eslint --ignore-path .gitignore --ignore-pattern **/**.min.js",
+    "lint:js": "npm run lint:eslint -- . ",
+    "lint:staged": "lint-staged",
+    "prebuild": "npm run build:clean && npm run test",
+    "prepublish": "npm run build",
+    "pretest": "npm run lint",
+    "release": "npmpub",
+    "start": "npm test",
+    "test": "mocha ./src/tests/**/*.js -R spec --timeout 2000000",
+    "test-travis": "node ./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- src/tests/**/*.js -R spec --timeout 2000000",
+    "test:clean": "rimraf ./coverage",
+    "test:lib": "mocha ./lib/tests/**/*.js -R spec --timeout 2000000"
+  },
+  "version": "0.3.5"
 }

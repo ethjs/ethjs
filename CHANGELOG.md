@@ -1,3 +1,11 @@
+# 0.3.5 -- Fix getTransactionSuccess unhandled promise rejection
+
+1. Fix getTx unhandled promise rejection
+
+# 0.3.4 -- EthJS-RPC
+
+1. Fix RPC unhandled promise rejection.
+
 # 0.2.8 -- getTransactionSuccess
 
 1. Added the very essential getTransactionSuccess method

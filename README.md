@@ -39,7 +39,7 @@
 
 A highly optimised, light-weight JS utility for [Ethereum](https://www.ethereum.org/) based on [`web3.js`](https://github.com/ethereum/web3.js), but lighter, async only and using `BN.js`.
 
-Only **103 kB** minified!
+Only **106 kB** minified!
 
 ## Install
 
@@ -50,7 +50,7 @@ npm install --save ethjs
 ## CDN
 
 ```
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/ethjs@0.3.0/dist/ethjs.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/ethjs@0.3.4/dist/ethjs.min.js"></script>
 ```
 
 Note, exports to `window.Eth` global.
@@ -83,6 +83,8 @@ const token = eth.contract(tokenABI).at('0x6e0E0e02377Bc1d90E8a7c21f12BA385C2C35
 token.totalSupply().then((totalSupply) => {
   // result <BN ...>  4500000
 });
+
+// token.transfer( ... ).then(txHash => eth.getTransactionSuccess(txHash)).then(receipt => console.log(receipt));
 ```
 
 ## About
