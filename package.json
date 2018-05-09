@@ -1,4 +1,33 @@
 {
+  "_from": "ethjs",
+  "_id": "ethjs@0.3.6",
+  "_inBundle": false,
+  "_integrity": "sha512-9ojnSkV5XXSM5vo0pKgZpE+SNBPxqSUN0dZmMP5dBZVFOYctRd9tfaZ80Jnde3M4JrfUhhkbG5QFvewitaAY7Q==",
+  "_location": "/ethjs",
+  "_phantomChildren": {
+    "bn.js": "4.11.6",
+    "ethjs-format": "0.2.5",
+    "js-sha3": "0.5.5",
+    "number-to-bn": "1.7.0"
+  },
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "ethjs",
+    "name": "ethjs",
+    "escapedName": "ethjs",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/ethjs/-/ethjs-0.3.6.tgz",
+  "_shasum": "c0d2b364e32c59d40fc7cd73f8103f370e99ad70",
+  "_spec": "ethjs",
+  "_where": "/home/nick",
   "author": {
     "name": "Nick Dodson",
     "email": "nick.dodson@consensys.net"
@@ -75,13 +104,13 @@
   "bundleDependencies": false,
   "dependencies": {
     "bn.js": "4.11.6",
-    "ethjs-abi": "0.2.0",
-    "ethjs-contract": "0.1.9",
+    "ethjs-abi": "0.2.1",
+    "ethjs-contract": "^0.1.9",
     "ethjs-filter": "0.1.5",
     "ethjs-provider-http": "0.1.6",
-    "ethjs-query": "0.3.4",
+    "ethjs-query": "^0.3.4",
     "ethjs-unit": "0.1.6",
-    "ethjs-util": "0.1.3",
+    "ethjs-util": "^0.1.3",
     "js-sha3": "0.5.5",
     "number-to-bn": "1.7.0"
   },
@@ -222,5 +251,5 @@
     "test:clean": "rimraf ./coverage",
     "test:lib": "mocha ./lib/tests/**/*.js -R spec --timeout 2000000"
   },
-  "version": "0.3.5"
+  "version": "0.3.7"
 }

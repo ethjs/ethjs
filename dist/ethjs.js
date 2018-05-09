@@ -63,7 +63,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 26);
+/******/ 	return __webpack_require__(__webpack_require__.s = 28);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -81,9 +81,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 'use strict'
 
-var base64 = __webpack_require__(12)
-var ieee754 = __webpack_require__(20)
-var isArray = __webpack_require__(21)
+var base64 = __webpack_require__(11)
+var ieee754 = __webpack_require__(22)
+var isArray = __webpack_require__(23)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -1861,7 +1861,7 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer, __webpack_require__(9)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer, __webpack_require__(8)))
 
 /***/ },
 /* 1 */
@@ -5295,16 +5295,60 @@ function isnan (val) {
   };
 })(typeof module === 'undefined' || module, this);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26)(module)))
 
 /***/ },
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
+var BN = __webpack_require__(1);
+var stripHexPrefix = __webpack_require__(5);
+
+/**
+ * Returns a BN object, converts a number value to a BN
+ * @param {String|Number|Object} `arg` input a string number, hex string number, number, BigNumber or BN object
+ * @return {Object} `output` BN object of the number
+ * @throws if the argument is not an array, object that isn't a bignumber, not a string number or number
+ */
+module.exports = function numberToBN(arg) {
+  if (typeof arg === 'string' || typeof arg === 'number') {
+    var multiplier = new BN(1); // eslint-disable-line
+    var formattedString = String(arg).toLowerCase().trim();
+    var isHexPrefixed = formattedString.substr(0, 2) === '0x' || formattedString.substr(0, 3) === '-0x';
+    var stringArg = stripHexPrefix(formattedString); // eslint-disable-line
+    if (stringArg.substr(0, 1) === '-') {
+      stringArg = stripHexPrefix(stringArg.slice(1));
+      multiplier = new BN(-1, 10);
+    }
+    stringArg = stringArg === '' ? '0' : stringArg;
+
+    if ((!stringArg.match(/^-?[0-9]+$/) && stringArg.match(/^[0-9A-Fa-f]+$/))
+      || stringArg.match(/^[a-fA-F]+$/)
+      || (isHexPrefixed === true && stringArg.match(/^[0-9A-Fa-f]+$/))) {
+      return new BN(stringArg, 16).mul(multiplier);
+    }
+
+    if ((stringArg.match(/^-?[0-9]+$/) || stringArg === '') && isHexPrefixed === false) {
+      return new BN(stringArg, 10).mul(multiplier);
+    }
+  } else if (typeof arg === 'object' && arg.toString && (!arg.pop && !arg.push)) {
+    if (arg.toString(10).match(/^-?[0-9]+$/) && (arg.mul || arg.dividedToIntegerBy)) {
+      return new BN(arg.toString(10), 10);
+    }
+  }
+
+  throw new Error('[number-to-bn] while converting number ' + JSON.stringify(arg) + ' to BN.js instance, error: invalid number value. Value must be an integer, hex string, BN or BigNumber instance. Note, decimals are not supported.');
+}
+
+
+/***/ },
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
 "use strict";
 /* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
 
-var isHexPrefixed = __webpack_require__(8);
+var isHexPrefixed = __webpack_require__(7);
 var stripHexPrefix = __webpack_require__(5);
 
 /**
@@ -5523,50 +5567,6 @@ module.exports = {
   isHexString: isHexString
 };
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
-
-/***/ },
-/* 3 */
-/***/ function(module, exports, __webpack_require__) {
-
-var BN = __webpack_require__(1);
-var stripHexPrefix = __webpack_require__(5);
-
-/**
- * Returns a BN object, converts a number value to a BN
- * @param {String|Number|Object} `arg` input a string number, hex string number, number, BigNumber or BN object
- * @return {Object} `output` BN object of the number
- * @throws if the argument is not an array, object that isn't a bignumber, not a string number or number
- */
-module.exports = function numberToBN(arg) {
-  if (typeof arg === 'string' || typeof arg === 'number') {
-    var multiplier = new BN(1); // eslint-disable-line
-    var formattedString = String(arg).toLowerCase().trim();
-    var isHexPrefixed = formattedString.substr(0, 2) === '0x' || formattedString.substr(0, 3) === '-0x';
-    var stringArg = stripHexPrefix(formattedString); // eslint-disable-line
-    if (stringArg.substr(0, 1) === '-') {
-      stringArg = stripHexPrefix(stringArg.slice(1));
-      multiplier = new BN(-1, 10);
-    }
-    stringArg = stringArg === '' ? '0' : stringArg;
-
-    if ((!stringArg.match(/^-?[0-9]+$/) && stringArg.match(/^[0-9A-Fa-f]+$/))
-      || stringArg.match(/^[a-fA-F]+$/)
-      || (isHexPrefixed === true && stringArg.match(/^[0-9A-Fa-f]+$/))) {
-      return new BN(stringArg, 16).mul(multiplier);
-    }
-
-    if ((stringArg.match(/^-?[0-9]+$/) || stringArg === '') && isHexPrefixed === false) {
-      return new BN(stringArg, 10).mul(multiplier);
-    }
-  } else if (typeof arg === 'object' && arg.toString && (!arg.pop && !arg.push)) {
-    if (arg.toString(10).match(/^-?[0-9]+$/) && (arg.mul || arg.dividedToIntegerBy)) {
-      return new BN(arg.toString(10), 10);
-    }
-  }
-
-  throw new Error('[number-to-bn] while converting number ' + JSON.stringify(arg) + ' to BN.js instance, error: invalid number value. Value must be an integer, hex string, BN or BigNumber instance. Note, decimals are not supported.');
-}
-
 
 /***/ },
 /* 4 */
@@ -6044,13 +6044,13 @@ module.exports = function numberToBN(arg) {
   }
 }(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23), __webpack_require__(9)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25), __webpack_require__(8)))
 
 /***/ },
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-var isHexPrefixed = __webpack_require__(8);
+var isHexPrefixed = __webpack_require__(7);
 
 /**
  * Removes '0x' from a given `String` is present
@@ -6068,200 +6068,6 @@ module.exports = function stripHexPrefix(str) {
 
 /***/ },
 /* 6 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
-
-/* eslint-disable */
-
-var utils = __webpack_require__(13);
-var uint256Coder = utils.uint256Coder;
-var coderBoolean = utils.coderBoolean;
-var coderFixedBytes = utils.coderFixedBytes;
-var coderAddress = utils.coderAddress;
-var coderDynamicBytes = utils.coderDynamicBytes;
-var coderString = utils.coderString;
-var coderArray = utils.coderArray;
-var paramTypePart = utils.paramTypePart;
-var getParamCoder = utils.getParamCoder;
-
-function Result() {}
-
-function encodeParams(types, values) {
-  if (types.length !== values.length) {
-    throw new Error('[ethjs-abi] while encoding params, types/values mismatch, Your contract requires ' + types.length + ' types (arguments), and you passed in ' + values.length);
-  }
-
-  var parts = [];
-
-  types.forEach(function (type, index) {
-    var coder = getParamCoder(type);
-    parts.push({ dynamic: coder.dynamic, value: coder.encode(values[index]) });
-  });
-
-  function alignSize(size) {
-    return parseInt(32 * Math.ceil(size / 32));
-  }
-
-  var staticSize = 0,
-      dynamicSize = 0;
-  parts.forEach(function (part) {
-    if (part.dynamic) {
-      staticSize += 32;
-      dynamicSize += alignSize(part.value.length);
-    } else {
-      staticSize += alignSize(part.value.length);
-    }
-  });
-
-  var offset = 0,
-      dynamicOffset = staticSize;
-  var data = new Buffer(staticSize + dynamicSize);
-
-  parts.forEach(function (part, index) {
-    if (part.dynamic) {
-      uint256Coder.encode(dynamicOffset).copy(data, offset);
-      offset += 32;
-
-      part.value.copy(data, dynamicOffset);
-      dynamicOffset += alignSize(part.value.length);
-    } else {
-      part.value.copy(data, offset);
-      offset += alignSize(part.value.length);
-    }
-  });
-
-  return '0x' + data.toString('hex');
-}
-
-// decode bytecode data from output names and types
-function decodeParams(names, types, data) {
-  var useNumberedParams = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
-
-  // Names is optional, so shift over all the parameters if not provided
-  if (arguments.length < 3) {
-    data = types;
-    types = names;
-    names = [];
-  }
-
-  data = utils.hexOrBuffer(data);
-  var values = new Result();
-
-  var offset = 0;
-  types.forEach(function (type, index) {
-    var coder = getParamCoder(type);
-    if (coder.dynamic) {
-      var dynamicOffset = uint256Coder.decode(data, offset);
-      var result = coder.decode(data, dynamicOffset.value.toNumber());
-      offset += dynamicOffset.consumed;
-    } else {
-      var result = coder.decode(data, offset);
-      offset += result.consumed;
-    }
-    if (useNumberedParams) values[index] = result.value;
-    if (names[index]) {
-      values[names[index]] = result.value;
-    }
-  });
-  return values;
-}
-
-// encode method ABI object with values in an array, output bytecode
-function encodeMethod(method, values) {
-  var signature = method.name + '(' + utils.getKeys(method.inputs, 'type').join(',') + ')';
-  var signatureEncoded = '0x' + new Buffer(utils.keccak256(signature), 'hex').slice(0, 4).toString('hex');
-  var paramsEncoded = encodeParams(utils.getKeys(method.inputs, 'type'), values).substring(2);
-
-  return '' + signatureEncoded + paramsEncoded;
-}
-
-// decode method data bytecode, from method ABI object
-function decodeMethod(method, data) {
-  var outputNames = utils.getKeys(method.outputs, 'name', true);
-  var outputTypes = utils.getKeys(method.outputs, 'type');
-
-  return decodeParams(outputNames, outputTypes, utils.hexOrBuffer(data));
-}
-
-// decode method data bytecode, from method ABI object
-function encodeEvent(eventObject, values) {
-  return encodeMethod(eventObject, values);
-}
-
-function eventSignature(eventObject) {
-  var signature = eventObject.name + '(' + utils.getKeys(eventObject.inputs, 'type').join(',') + ')';
-  return '0x' + utils.keccak256(signature);
-}
-
-// decode method data bytecode, from method ABI object
-function decodeEvent(eventObject, data, topics) {
-  var useNumberedParams = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
-
-  var nonIndexed = eventObject.inputs.filter(function (input) {
-    return !input.indexed;
-  });
-  var nonIndexedNames = utils.getKeys(nonIndexed, 'name', true);
-  var nonIndexedTypes = utils.getKeys(nonIndexed, 'type');
-  var event = decodeParams(nonIndexedNames, nonIndexedTypes, utils.hexOrBuffer(data), useNumberedParams);
-  var topicOffset = eventObject.anonymous ? 0 : 1;
-  eventObject.inputs.filter(function (input) {
-    return input.indexed;
-  }).map(function (input, i) {
-    var topic = new Buffer(topics[i + topicOffset].slice(2), 'hex');
-    var coder = getParamCoder(input.type);
-    event[input.name] = coder.decode(topic, 0).value;
-  });
-  event._eventName = eventObject.name;
-  return event;
-}
-
-// Decode a specific log item with a specific event abi
-function decodeLogItem(eventObject, log) {
-  var useNumberedParams = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-
-  if (eventObject && log.topics[0] === eventSignature(eventObject)) {
-    return decodeEvent(eventObject, log.data, log.topics, useNumberedParams);
-  }
-}
-
-// Create a decoder for all events defined in an abi. It returns a function which is called
-// on an array of log entries such as received from getLogs or getTransactionReceipt and parses
-// any matching log entries
-function logDecoder(abi) {
-  var useNumberedParams = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-
-  var eventMap = {};
-  abi.filter(function (item) {
-    return item.type === 'event';
-  }).map(function (item) {
-    eventMap[eventSignature(item)] = item;
-  });
-  return function (logItems) {
-    return logItems.map(function (log) {
-      return decodeLogItem(eventMap[log.topics[0]], log, useNumberedParams);
-    }).filter(function (i) {
-      return i;
-    });
-  };
-}
-
-module.exports = {
-  encodeParams: encodeParams,
-  decodeParams: decodeParams,
-  encodeMethod: encodeMethod,
-  decodeMethod: decodeMethod,
-  encodeEvent: encodeEvent,
-  decodeEvent: decodeEvent,
-  decodeLogItem: decodeLogItem,
-  logDecoder: logDecoder,
-  eventSignature: eventSignature
-};
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
-
-/***/ },
-/* 7 */
 /***/ function(module, exports) {
 
 "use strict";
@@ -6424,7 +6230,7 @@ function EthFilter(query) {
 module.exports = EthFilter;
 
 /***/ },
-/* 8 */
+/* 7 */
 /***/ function(module, exports) {
 
 /**
@@ -6443,7 +6249,7 @@ module.exports = function isHexPrefixed(str) {
 
 
 /***/ },
-/* 9 */
+/* 8 */
 /***/ function(module, exports) {
 
 var g;
@@ -6468,24 +6274,24 @@ module.exports = g;
 
 
 /***/ },
-/* 10 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
 
-var EthQuery = __webpack_require__(17);
-var EthFilter = __webpack_require__(7);
+var EthQuery = __webpack_require__(19);
+var EthFilter = __webpack_require__(6);
 var EthContract = __webpack_require__(14);
-var HttpProvider = __webpack_require__(16);
-var abi = __webpack_require__(6);
+var HttpProvider = __webpack_require__(18);
+var abi = __webpack_require__(12);
 // const getTxSuccess = require('ethjs-transaction-success'); // eslint-disable-line
-var unit = __webpack_require__(19);
+var unit = __webpack_require__(21);
 var keccak256 = __webpack_require__(4).keccak_256;
-var toBN = __webpack_require__(3);
+var toBN = __webpack_require__(2);
 var BN = __webpack_require__(1);
-var utils = __webpack_require__(2);
-var getTransactionSuccess = __webpack_require__(11);
+var utils = __webpack_require__(3);
+var getTransactionSuccess = __webpack_require__(10);
 
 module.exports = Eth;
 
@@ -6543,7 +6349,7 @@ Eth.HttpProvider = HttpProvider;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ },
-/* 11 */
+/* 10 */
 /***/ function(module, exports) {
 
 "use strict";
@@ -6593,7 +6399,7 @@ module.exports = function (eth) {
 };
 
 /***/ },
-/* 12 */
+/* 11 */
 /***/ function(module, exports) {
 
 "use strict";
@@ -6618,65 +6424,97 @@ for (var i = 0, len = code.length; i < len; ++i) {
 revLookup['-'.charCodeAt(0)] = 62
 revLookup['_'.charCodeAt(0)] = 63
 
-function placeHoldersCount (b64) {
+function getLens (b64) {
   var len = b64.length
+
   if (len % 4 > 0) {
     throw new Error('Invalid string. Length must be a multiple of 4')
   }
 
-  // the number of equal signs (place holders)
-  // if there are two placeholders, than the two characters before it
-  // represent one byte
-  // if there is only one, then the three characters before it represent 2 bytes
-  // this is just a cheap hack to not do indexOf twice
-  return b64[len - 2] === '=' ? 2 : b64[len - 1] === '=' ? 1 : 0
+  // Trim off extra bytes after placeholder bytes are found
+  // See: https://github.com/beatgammit/base64-js/issues/42
+  var validLen = b64.indexOf('=')
+  if (validLen === -1) validLen = len
+
+  var placeHoldersLen = validLen === len
+    ? 0
+    : 4 - (validLen % 4)
+
+  return [validLen, placeHoldersLen]
 }
 
+// base64 is 4/3 + up to two characters of the original data
 function byteLength (b64) {
-  // base64 is 4/3 + up to two characters of the original data
-  return (b64.length * 3 / 4) - placeHoldersCount(b64)
+  var lens = getLens(b64)
+  var validLen = lens[0]
+  var placeHoldersLen = lens[1]
+  return ((validLen + placeHoldersLen) * 3 / 4) - placeHoldersLen
+}
+
+function _byteLength (b64, validLen, placeHoldersLen) {
+  return ((validLen + placeHoldersLen) * 3 / 4) - placeHoldersLen
 }
 
 function toByteArray (b64) {
-  var i, l, tmp, placeHolders, arr
-  var len = b64.length
-  placeHolders = placeHoldersCount(b64)
+  var tmp
+  var lens = getLens(b64)
+  var validLen = lens[0]
+  var placeHoldersLen = lens[1]
 
-  arr = new Arr((len * 3 / 4) - placeHolders)
+  var arr = new Arr(_byteLength(b64, validLen, placeHoldersLen))
+
+  var curByte = 0
 
   // if there are placeholders, only get up to the last complete 4 chars
-  l = placeHolders > 0 ? len - 4 : len
+  var len = placeHoldersLen > 0
+    ? validLen - 4
+    : validLen
 
-  var L = 0
-
-  for (i = 0; i < l; i += 4) {
-    tmp = (revLookup[b64.charCodeAt(i)] << 18) | (revLookup[b64.charCodeAt(i + 1)] << 12) | (revLookup[b64.charCodeAt(i + 2)] << 6) | revLookup[b64.charCodeAt(i + 3)]
-    arr[L++] = (tmp >> 16) & 0xFF
-    arr[L++] = (tmp >> 8) & 0xFF
-    arr[L++] = tmp & 0xFF
+  for (var i = 0; i < len; i += 4) {
+    tmp =
+      (revLookup[b64.charCodeAt(i)] << 18) |
+      (revLookup[b64.charCodeAt(i + 1)] << 12) |
+      (revLookup[b64.charCodeAt(i + 2)] << 6) |
+      revLookup[b64.charCodeAt(i + 3)]
+    arr[curByte++] = (tmp >> 16) & 0xFF
+    arr[curByte++] = (tmp >> 8) & 0xFF
+    arr[curByte++] = tmp & 0xFF
   }
 
-  if (placeHolders === 2) {
-    tmp = (revLookup[b64.charCodeAt(i)] << 2) | (revLookup[b64.charCodeAt(i + 1)] >> 4)
-    arr[L++] = tmp & 0xFF
-  } else if (placeHolders === 1) {
-    tmp = (revLookup[b64.charCodeAt(i)] << 10) | (revLookup[b64.charCodeAt(i + 1)] << 4) | (revLookup[b64.charCodeAt(i + 2)] >> 2)
-    arr[L++] = (tmp >> 8) & 0xFF
-    arr[L++] = tmp & 0xFF
+  if (placeHoldersLen === 2) {
+    tmp =
+      (revLookup[b64.charCodeAt(i)] << 2) |
+      (revLookup[b64.charCodeAt(i + 1)] >> 4)
+    arr[curByte++] = tmp & 0xFF
+  }
+
+  if (placeHoldersLen === 1) {
+    tmp =
+      (revLookup[b64.charCodeAt(i)] << 10) |
+      (revLookup[b64.charCodeAt(i + 1)] << 4) |
+      (revLookup[b64.charCodeAt(i + 2)] >> 2)
+    arr[curByte++] = (tmp >> 8) & 0xFF
+    arr[curByte++] = tmp & 0xFF
   }
 
   return arr
 }
 
 function tripletToBase64 (num) {
-  return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F]
+  return lookup[num >> 18 & 0x3F] +
+    lookup[num >> 12 & 0x3F] +
+    lookup[num >> 6 & 0x3F] +
+    lookup[num & 0x3F]
 }
 
 function encodeChunk (uint8, start, end) {
   var tmp
   var output = []
   for (var i = start; i < end; i += 3) {
-    tmp = ((uint8[i] << 16) & 0xFF0000) + ((uint8[i + 1] << 8) & 0xFF00) + (uint8[i + 2] & 0xFF)
+    tmp =
+      ((uint8[i] << 16) & 0xFF0000) +
+      ((uint8[i + 1] << 8) & 0xFF00) +
+      (uint8[i + 2] & 0xFF)
     output.push(tripletToBase64(tmp))
   }
   return output.join('')
@@ -6686,34 +6524,247 @@ function fromByteArray (uint8) {
   var tmp
   var len = uint8.length
   var extraBytes = len % 3 // if we have 1 byte left, pad 2 bytes
-  var output = ''
   var parts = []
   var maxChunkLength = 16383 // must be multiple of 3
 
   // go through the array every three bytes, we'll deal with trailing stuff later
   for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
-    parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)))
+    parts.push(encodeChunk(
+      uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)
+    ))
   }
 
   // pad the end with zeros, but make sure to not forget the extra bytes
   if (extraBytes === 1) {
     tmp = uint8[len - 1]
-    output += lookup[tmp >> 2]
-    output += lookup[(tmp << 4) & 0x3F]
-    output += '=='
+    parts.push(
+      lookup[tmp >> 2] +
+      lookup[(tmp << 4) & 0x3F] +
+      '=='
+    )
   } else if (extraBytes === 2) {
-    tmp = (uint8[len - 2] << 8) + (uint8[len - 1])
-    output += lookup[tmp >> 10]
-    output += lookup[(tmp >> 4) & 0x3F]
-    output += lookup[(tmp << 2) & 0x3F]
-    output += '='
+    tmp = (uint8[len - 2] << 8) + uint8[len - 1]
+    parts.push(
+      lookup[tmp >> 10] +
+      lookup[(tmp >> 4) & 0x3F] +
+      lookup[(tmp << 2) & 0x3F] +
+      '='
+    )
   }
-
-  parts.push(output)
 
   return parts.join('')
 }
 
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
+
+/* eslint-disable */
+
+var utils = __webpack_require__(13);
+var uint256Coder = utils.uint256Coder;
+var coderBoolean = utils.coderBoolean;
+var coderFixedBytes = utils.coderFixedBytes;
+var coderAddress = utils.coderAddress;
+var coderDynamicBytes = utils.coderDynamicBytes;
+var coderString = utils.coderString;
+var coderArray = utils.coderArray;
+var paramTypePart = utils.paramTypePart;
+var getParamCoder = utils.getParamCoder;
+
+function Result() {}
+
+function encodeParams(types, values) {
+  if (types.length !== values.length) {
+    throw new Error('[ethjs-abi] while encoding params, types/values mismatch, Your contract requires ' + types.length + ' types (arguments), and you passed in ' + values.length);
+  }
+
+  var parts = [];
+
+  types.forEach(function (type, index) {
+    var coder = getParamCoder(type);
+    parts.push({ dynamic: coder.dynamic, value: coder.encode(values[index]) });
+  });
+
+  function alignSize(size) {
+    return parseInt(32 * Math.ceil(size / 32));
+  }
+
+  var staticSize = 0,
+      dynamicSize = 0;
+  parts.forEach(function (part) {
+    if (part.dynamic) {
+      staticSize += 32;
+      dynamicSize += alignSize(part.value.length);
+    } else {
+      staticSize += alignSize(part.value.length);
+    }
+  });
+
+  var offset = 0,
+      dynamicOffset = staticSize;
+  var data = new Buffer(staticSize + dynamicSize);
+
+  parts.forEach(function (part, index) {
+    if (part.dynamic) {
+      uint256Coder.encode(dynamicOffset).copy(data, offset);
+      offset += 32;
+
+      part.value.copy(data, dynamicOffset);
+      dynamicOffset += alignSize(part.value.length);
+    } else {
+      part.value.copy(data, offset);
+      offset += alignSize(part.value.length);
+    }
+  });
+
+  return '0x' + data.toString('hex');
+}
+
+// decode bytecode data from output names and types
+function decodeParams(names, types, data) {
+  var useNumberedParams = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+
+  // Names is optional, so shift over all the parameters if not provided
+  if (arguments.length < 3) {
+    data = types;
+    types = names;
+    names = [];
+  }
+
+  data = utils.hexOrBuffer(data);
+  var values = new Result();
+
+  var offset = 0;
+  types.forEach(function (type, index) {
+    var coder = getParamCoder(type);
+
+    if (coder.dynamic) {
+      var dynamicOffset = uint256Coder.decode(data, offset);
+      var result = coder.decode(data, dynamicOffset.value.toNumber());
+      offset += dynamicOffset.consumed;
+    } else {
+      var result = coder.decode(data, offset);
+      offset += result.consumed;
+    }
+
+    if (useNumberedParams) {
+      values[index] = result.value;
+    }
+
+    if (names[index]) {
+      values[names[index]] = result.value;
+    }
+  });
+  return values;
+}
+
+// create an encoded method signature from an ABI object
+function encodeSignature(method) {
+  var signature = method.name + '(' + utils.getKeys(method.inputs, 'type').join(',') + ')';
+  var signatureEncoded = '0x' + new Buffer(utils.keccak256(signature), 'hex').slice(0, 4).toString('hex');
+
+  return signatureEncoded;
+}
+
+// encode method ABI object with values in an array, output bytecode
+function encodeMethod(method, values) {
+  var paramsEncoded = encodeParams(utils.getKeys(method.inputs, 'type'), values).substring(2);
+
+  return '' + encodeSignature(method) + paramsEncoded;
+}
+
+// decode method data bytecode, from method ABI object
+function decodeMethod(method, data) {
+  var outputNames = utils.getKeys(method.outputs, 'name', true);
+  var outputTypes = utils.getKeys(method.outputs, 'type');
+
+  return decodeParams(outputNames, outputTypes, utils.hexOrBuffer(data));
+}
+
+// decode method data bytecode, from method ABI object
+function encodeEvent(eventObject, values) {
+  return encodeMethod(eventObject, values);
+}
+
+function eventSignature(eventObject) {
+  var signature = eventObject.name + '(' + utils.getKeys(eventObject.inputs, 'type').join(',') + ')';
+
+  return '0x' + utils.keccak256(signature);
+}
+
+// decode method data bytecode, from method ABI object
+function decodeEvent(eventObject, data, topics) {
+  var useNumberedParams = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+
+  var nonIndexed = eventObject.inputs.filter(function (input) {
+    return !input.indexed;
+  });
+  var nonIndexedNames = utils.getKeys(nonIndexed, 'name', true);
+  var nonIndexedTypes = utils.getKeys(nonIndexed, 'type');
+  var event = decodeParams(nonIndexedNames, nonIndexedTypes, utils.hexOrBuffer(data), useNumberedParams);
+  var topicOffset = eventObject.anonymous ? 0 : 1;
+
+  eventObject.inputs.filter(function (input) {
+    return input.indexed;
+  }).map(function (input, i) {
+    var topic = new Buffer(topics[i + topicOffset].slice(2), 'hex');
+    var coder = getParamCoder(input.type);
+    event[input.name] = coder.decode(topic, 0).value;
+  });
+
+  event._eventName = eventObject.name;
+
+  return event;
+}
+
+// Decode a specific log item with a specific event abi
+function decodeLogItem(eventObject, log) {
+  var useNumberedParams = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+
+  if (eventObject && log.topics[0] === eventSignature(eventObject)) {
+    return decodeEvent(eventObject, log.data, log.topics, useNumberedParams);
+  }
+}
+
+// Create a decoder for all events defined in an abi. It returns a function which is called
+// on an array of log entries such as received from getLogs or getTransactionReceipt and parses
+// any matching log entries
+function logDecoder(abi) {
+  var useNumberedParams = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+  var eventMap = {};
+  abi.filter(function (item) {
+    return item.type === 'event';
+  }).map(function (item) {
+    eventMap[eventSignature(item)] = item;
+  });
+  return function (logItems) {
+    return logItems.map(function (log) {
+      return decodeLogItem(eventMap[log.topics[0]], log, useNumberedParams);
+    }).filter(function (i) {
+      return i;
+    });
+  };
+}
+
+module.exports = {
+  encodeParams: encodeParams,
+  decodeParams: decodeParams,
+  encodeMethod: encodeMethod,
+  decodeMethod: decodeMethod,
+  encodeEvent: encodeEvent,
+  decodeEvent: decodeEvent,
+  decodeLogItem: decodeLogItem,
+  logDecoder: logDecoder,
+  eventSignature: eventSignature,
+  encodeSignature: encodeSignature
+};
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ },
 /* 13 */
@@ -6723,7 +6774,7 @@ function fromByteArray (uint8) {
 /* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
 
 var BN = __webpack_require__(1);
-var numberToBN = __webpack_require__(3);
+var numberToBN = __webpack_require__(2);
 var keccak256 = __webpack_require__(4).keccak_256;
 
 // from ethereumjs-util
@@ -7146,11 +7197,11 @@ module.exports = {
 "use strict";
 'use strict';
 
-var abi = __webpack_require__(6); // eslint-disable-line
+var abi = __webpack_require__(15); // eslint-disable-line
 var keccak256 = __webpack_require__(4).keccak_256; // eslint-disable-line
-var EthFilter = __webpack_require__(7); // eslint-disable-line
-var getKeys = __webpack_require__(2).getKeys; // eslint-disable-line
-var arrayContainsArray = __webpack_require__(2).arrayContainsArray;
+var EthFilter = __webpack_require__(6); // eslint-disable-line
+var getKeys = __webpack_require__(3).getKeys; // eslint-disable-line
+var arrayContainsArray = __webpack_require__(3).arrayContainsArray;
 
 function hasTransactionObject(args) {
   var txObjectProperties = ['from', 'to', 'data', 'value', 'gasPrice', 'gas'];
@@ -7312,11 +7363,629 @@ module.exports = EthContract;
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
+/* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
+
+/* eslint-disable */
+
+var utils = __webpack_require__(16);
+var uint256Coder = utils.uint256Coder;
+var coderBoolean = utils.coderBoolean;
+var coderFixedBytes = utils.coderFixedBytes;
+var coderAddress = utils.coderAddress;
+var coderDynamicBytes = utils.coderDynamicBytes;
+var coderString = utils.coderString;
+var coderArray = utils.coderArray;
+var paramTypePart = utils.paramTypePart;
+var getParamCoder = utils.getParamCoder;
+
+function Result() {}
+
+function encodeParams(types, values) {
+  if (types.length !== values.length) {
+    throw new Error('[ethjs-abi] while encoding params, types/values mismatch, Your contract requires ' + types.length + ' types (arguments), and you passed in ' + values.length);
+  }
+
+  var parts = [];
+
+  types.forEach(function (type, index) {
+    var coder = getParamCoder(type);
+    parts.push({ dynamic: coder.dynamic, value: coder.encode(values[index]) });
+  });
+
+  function alignSize(size) {
+    return parseInt(32 * Math.ceil(size / 32));
+  }
+
+  var staticSize = 0,
+      dynamicSize = 0;
+  parts.forEach(function (part) {
+    if (part.dynamic) {
+      staticSize += 32;
+      dynamicSize += alignSize(part.value.length);
+    } else {
+      staticSize += alignSize(part.value.length);
+    }
+  });
+
+  var offset = 0,
+      dynamicOffset = staticSize;
+  var data = new Buffer(staticSize + dynamicSize);
+
+  parts.forEach(function (part, index) {
+    if (part.dynamic) {
+      uint256Coder.encode(dynamicOffset).copy(data, offset);
+      offset += 32;
+
+      part.value.copy(data, dynamicOffset);
+      dynamicOffset += alignSize(part.value.length);
+    } else {
+      part.value.copy(data, offset);
+      offset += alignSize(part.value.length);
+    }
+  });
+
+  return '0x' + data.toString('hex');
+}
+
+// decode bytecode data from output names and types
+function decodeParams(names, types, data) {
+  var useNumberedParams = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+
+  // Names is optional, so shift over all the parameters if not provided
+  if (arguments.length < 3) {
+    data = types;
+    types = names;
+    names = [];
+  }
+
+  data = utils.hexOrBuffer(data);
+  var values = new Result();
+
+  var offset = 0;
+  types.forEach(function (type, index) {
+    var coder = getParamCoder(type);
+    if (coder.dynamic) {
+      var dynamicOffset = uint256Coder.decode(data, offset);
+      var result = coder.decode(data, dynamicOffset.value.toNumber());
+      offset += dynamicOffset.consumed;
+    } else {
+      var result = coder.decode(data, offset);
+      offset += result.consumed;
+    }
+    if (useNumberedParams) values[index] = result.value;
+    if (names[index]) {
+      values[names[index]] = result.value;
+    }
+  });
+  return values;
+}
+
+// encode method ABI object with values in an array, output bytecode
+function encodeMethod(method, values) {
+  var signature = method.name + '(' + utils.getKeys(method.inputs, 'type').join(',') + ')';
+  var signatureEncoded = '0x' + new Buffer(utils.keccak256(signature), 'hex').slice(0, 4).toString('hex');
+  var paramsEncoded = encodeParams(utils.getKeys(method.inputs, 'type'), values).substring(2);
+
+  return '' + signatureEncoded + paramsEncoded;
+}
+
+// decode method data bytecode, from method ABI object
+function decodeMethod(method, data) {
+  var outputNames = utils.getKeys(method.outputs, 'name', true);
+  var outputTypes = utils.getKeys(method.outputs, 'type');
+
+  return decodeParams(outputNames, outputTypes, utils.hexOrBuffer(data));
+}
+
+// decode method data bytecode, from method ABI object
+function encodeEvent(eventObject, values) {
+  return encodeMethod(eventObject, values);
+}
+
+function eventSignature(eventObject) {
+  var signature = eventObject.name + '(' + utils.getKeys(eventObject.inputs, 'type').join(',') + ')';
+  return '0x' + utils.keccak256(signature);
+}
+
+// decode method data bytecode, from method ABI object
+function decodeEvent(eventObject, data, topics) {
+  var useNumberedParams = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+
+  var nonIndexed = eventObject.inputs.filter(function (input) {
+    return !input.indexed;
+  });
+  var nonIndexedNames = utils.getKeys(nonIndexed, 'name', true);
+  var nonIndexedTypes = utils.getKeys(nonIndexed, 'type');
+  var event = decodeParams(nonIndexedNames, nonIndexedTypes, utils.hexOrBuffer(data), useNumberedParams);
+  var topicOffset = eventObject.anonymous ? 0 : 1;
+  eventObject.inputs.filter(function (input) {
+    return input.indexed;
+  }).map(function (input, i) {
+    var topic = new Buffer(topics[i + topicOffset].slice(2), 'hex');
+    var coder = getParamCoder(input.type);
+    event[input.name] = coder.decode(topic, 0).value;
+  });
+  event._eventName = eventObject.name;
+  return event;
+}
+
+// Decode a specific log item with a specific event abi
+function decodeLogItem(eventObject, log) {
+  var useNumberedParams = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+
+  if (eventObject && log.topics[0] === eventSignature(eventObject)) {
+    return decodeEvent(eventObject, log.data, log.topics, useNumberedParams);
+  }
+}
+
+// Create a decoder for all events defined in an abi. It returns a function which is called
+// on an array of log entries such as received from getLogs or getTransactionReceipt and parses
+// any matching log entries
+function logDecoder(abi) {
+  var useNumberedParams = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+  var eventMap = {};
+  abi.filter(function (item) {
+    return item.type === 'event';
+  }).map(function (item) {
+    eventMap[eventSignature(item)] = item;
+  });
+  return function (logItems) {
+    return logItems.map(function (log) {
+      return decodeLogItem(eventMap[log.topics[0]], log, useNumberedParams);
+    }).filter(function (i) {
+      return i;
+    });
+  };
+}
+
+module.exports = {
+  encodeParams: encodeParams,
+  decodeParams: decodeParams,
+  encodeMethod: encodeMethod,
+  decodeMethod: decodeMethod,
+  encodeEvent: encodeEvent,
+  decodeEvent: decodeEvent,
+  decodeLogItem: decodeLogItem,
+  logDecoder: logDecoder,
+  eventSignature: eventSignature
+};
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
+
+/***/ },
+/* 16 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
+
+var BN = __webpack_require__(1);
+var numberToBN = __webpack_require__(2);
+var keccak256 = __webpack_require__(4).keccak_256;
+
+// from ethereumjs-util
+function stripZeros(aInput) {
+  var a = aInput; // eslint-disable-line
+  var first = a[0]; // eslint-disable-line
+  while (a.length > 0 && first.toString() === '0') {
+    a = a.slice(1);
+    first = a[0];
+  }
+  return a;
+}
+
+function bnToBuffer(bnInput) {
+  var bn = bnInput; // eslint-disable-line
+  var hex = bn.toString(16); // eslint-disable-line
+  if (hex.length % 2) {
+    hex = '0' + hex;
+  }
+  return stripZeros(new Buffer(hex, 'hex'));
+}
+
+function isHexString(value, length) {
+  if (typeof value !== 'string' || !value.match(/^0x[0-9A-Fa-f]*$/)) {
+    return false;
+  }
+  if (length && value.length !== 2 + 2 * length) {
+    return false;
+  }
+  return true;
+}
+
+function hexOrBuffer(valueInput, name) {
+  var value = valueInput; // eslint-disable-line
+  if (!Buffer.isBuffer(value)) {
+    if (!isHexString(value)) {
+      var error = new Error(name ? '[ethjs-abi] invalid ' + name : '[ethjs-abi] invalid hex or buffer, must be a prefixed alphanumeric even length hex string');
+      error.reason = '[ethjs-abi] invalid hex string, hex must be prefixed and alphanumeric (e.g. 0x023..)';
+      error.value = value;
+      throw error;
+    }
+
+    value = value.substring(2);
+    if (value.length % 2) {
+      value = '0' + value;
+    }
+    value = new Buffer(value, 'hex');
+  }
+
+  return value;
+}
+
+function hexlify(value) {
+  if (typeof value === 'number') {
+    return '0x' + bnToBuffer(new BN(value)).toString('hex');
+  } else if (value.mod || value.modulo) {
+    return '0x' + bnToBuffer(value).toString('hex');
+  } else {
+    // eslint-disable-line
+    return '0x' + hexOrBuffer(value).toString('hex');
+  }
+}
+
+// getKeys([{a: 1, b: 2}, {a: 3, b: 4}], 'a') => [1, 3]
+function getKeys(params, key, allowEmpty) {
+  var result = []; // eslint-disable-line
+
+  if (!Array.isArray(params)) {
+    throw new Error('[ethjs-abi] while getting keys, invalid params value ' + JSON.stringify(params));
+  }
+
+  for (var i = 0; i < params.length; i++) {
+    // eslint-disable-line
+    var value = params[i][key]; // eslint-disable-line
+    if (allowEmpty && !value) {
+      value = '';
+    } else if (typeof value !== 'string') {
+      throw new Error('[ethjs-abi] while getKeys found invalid ABI data structure, type value not string');
+    }
+    result.push(value);
+  }
+
+  return result;
+}
+
+function coderNumber(size, signed) {
+  return {
+    encode: function encodeNumber(valueInput) {
+      var value = valueInput; // eslint-disable-line
+
+      if (typeof value === 'object' && value.toString && (value.toTwos || value.dividedToIntegerBy)) {
+        value = value.toString(10).split('.')[0];
+      }
+
+      if (typeof value === 'string' || typeof value === 'number') {
+        value = String(value).split('.')[0];
+      }
+
+      value = numberToBN(value);
+      value = value.toTwos(size * 8).maskn(size * 8);
+      if (signed) {
+        value = value.fromTwos(size * 8).toTwos(256);
+      }
+      return value.toArrayLike(Buffer, 'be', 32);
+    },
+    decode: function decodeNumber(data, offset) {
+      var junkLength = 32 - size; // eslint-disable-line
+      var value = new BN(data.slice(offset + junkLength, offset + 32)); // eslint-disable-line
+      if (signed) {
+        value = value.fromTwos(size * 8);
+      } else {
+        value = value.maskn(size * 8);
+      }
+      return {
+        consumed: 32,
+        value: new BN(value.toString(10))
+      };
+    }
+  };
+}
+var uint256Coder = coderNumber(32, false);
+
+var coderBoolean = {
+  encode: function encodeBoolean(value) {
+    return uint256Coder.encode(value ? 1 : 0);
+  },
+  decode: function decodeBoolean(data, offset) {
+    var result = uint256Coder.decode(data, offset); // eslint-disable-line
+    return {
+      consumed: result.consumed,
+      value: !result.value.isZero()
+    };
+  }
+};
+
+function coderFixedBytes(length) {
+  return {
+    encode: function encodeFixedBytes(valueInput) {
+      var value = valueInput; // eslint-disable-line
+      value = hexOrBuffer(value);
+
+      if (value.length === 32) {
+        return value;
+      }
+
+      var result = new Buffer(32); // eslint-disable-line
+      result.fill(0);
+      value.copy(result);
+      return result;
+    },
+    decode: function decodeFixedBytes(data, offset) {
+      if (data.length !== 0 && data.length < offset + 32) {
+        throw new Error('[ethjs-abi] while decoding fixed bytes, invalid bytes data length: ' + length);
+      }
+
+      return {
+        consumed: 32,
+        value: '0x' + data.slice(offset, offset + length).toString('hex')
+      };
+    }
+  };
+}
+
+var coderAddress = {
+  encode: function encodeAddress(valueInput) {
+    var value = valueInput; // eslint-disable-line
+    var result = new Buffer(32); // eslint-disable-line
+    if (!isHexString(value, 20)) {
+      throw new Error('[ethjs-abi] while encoding address, invalid address value, not alphanumeric 20 byte hex string');
+    }
+    value = hexOrBuffer(value);
+    result.fill(0);
+    value.copy(result, 12);
+    return result;
+  },
+  decode: function decodeAddress(data, offset) {
+    if (data.length === 0) {
+      return {
+        consumed: 32,
+        value: '0x'
+      };
+    }
+    if (data.length !== 0 && data.length < offset + 32) {
+      throw new Error('[ethjs-abi] while decoding address data, invalid address data, invalid byte length ' + data.length);
+    }
+    return {
+      consumed: 32,
+      value: '0x' + data.slice(offset + 12, offset + 32).toString('hex')
+    };
+  }
+};
+
+function encodeDynamicBytesHelper(value) {
+  var dataLength = parseInt(32 * Math.ceil(value.length / 32)); // eslint-disable-line
+  var padding = new Buffer(dataLength - value.length); // eslint-disable-line
+  padding.fill(0);
+
+  return Buffer.concat([uint256Coder.encode(value.length), value, padding]);
+}
+
+function decodeDynamicBytesHelper(data, offset) {
+  if (data.length !== 0 && data.length < offset + 32) {
+    throw new Error('[ethjs-abi] while decoding dynamic bytes data, invalid bytes length: ' + data.length + ' should be less than ' + (offset + 32));
+  }
+
+  var length = uint256Coder.decode(data, offset).value; // eslint-disable-line
+  length = length.toNumber();
+  if (data.length !== 0 && data.length < offset + 32 + length) {
+    throw new Error('[ethjs-abi] while decoding dynamic bytes data, invalid bytes length: ' + data.length + ' should be less than ' + (offset + 32 + length));
+  }
+
+  return {
+    consumed: parseInt(32 + 32 * Math.ceil(length / 32), 10),
+    value: data.slice(offset + 32, offset + 32 + length)
+  };
+}
+
+var coderDynamicBytes = {
+  encode: function encodeDynamicBytes(value) {
+    return encodeDynamicBytesHelper(hexOrBuffer(value));
+  },
+  decode: function decodeDynamicBytes(data, offset) {
+    var result = decodeDynamicBytesHelper(data, offset); // eslint-disable-line
+    result.value = '0x' + result.value.toString('hex');
+    return result;
+  },
+  dynamic: true
+};
+
+var coderString = {
+  encode: function encodeString(value) {
+    return encodeDynamicBytesHelper(new Buffer(value, 'utf8'));
+  },
+  decode: function decodeString(data, offset) {
+    var result = decodeDynamicBytesHelper(data, offset); // eslint-disable-line
+    result.value = result.value.toString('utf8');
+    return result;
+  },
+  dynamic: true
+};
+
+function coderArray(coder, lengthInput) {
+  return {
+    encode: function encodeArray(value) {
+      var result = new Buffer(0); // eslint-disable-line
+      var length = lengthInput; // eslint-disable-line
+
+      if (!Array.isArray(value)) {
+        throw new Error('[ethjs-abi] while encoding array, invalid array data, not type Object (Array)');
+      }
+
+      if (length === -1) {
+        length = value.length;
+        result = uint256Coder.encode(length);
+      }
+
+      if (length !== value.length) {
+        throw new Error('[ethjs-abi] while encoding array, size mismatch array length ' + length + ' does not equal ' + value.length);
+      }
+
+      value.forEach(function (resultValue) {
+        result = Buffer.concat([result, coder.encode(resultValue)]);
+      });
+
+      return result;
+    },
+    decode: function decodeArray(data, offsetInput) {
+      var length = lengthInput; // eslint-disable-line
+      var offset = offsetInput; // eslint-disable-line
+      // @TODO:
+      // if (data.length < offset + length * 32) { throw new Error('invalid array'); }
+
+      var consumed = 0; // eslint-disable-line
+      var decodeResult; // eslint-disable-line
+
+      if (length === -1) {
+        decodeResult = uint256Coder.decode(data, offset);
+        length = decodeResult.value.toNumber();
+        consumed += decodeResult.consumed;
+        offset += decodeResult.consumed;
+      }
+
+      var value = []; // eslint-disable-line
+
+      for (var i = 0; i < length; i++) {
+        // eslint-disable-line
+        var loopResult = coder.decode(data, offset);
+        consumed += loopResult.consumed;
+        offset += loopResult.consumed;
+        value.push(loopResult.value);
+      }
+
+      return {
+        consumed: consumed,
+        value: value
+      };
+    },
+    dynamic: lengthInput === -1
+  };
+}
+
+// Break the type up into [staticType][staticArray]*[dynamicArray]? | [dynamicType] and
+// build the coder up from its parts
+var paramTypePart = new RegExp(/^((u?int|bytes)([0-9]*)|(address|bool|string)|(\[([0-9]*)\]))/);
+
+function getParamCoder(typeInput) {
+  var type = typeInput; // eslint-disable-line
+  var coder = null; // eslint-disable-line
+  var invalidTypeErrorMessage = '[ethjs-abi] while getting param coder (getParamCoder) type value ' + JSON.stringify(type) + ' is either invalid or unsupported by ethjs-abi.';
+
+  while (type) {
+    var part = type.match(paramTypePart); // eslint-disable-line
+    if (!part) {
+      throw new Error(invalidTypeErrorMessage);
+    }
+    type = type.substring(part[0].length);
+
+    var prefix = part[2] || part[4] || part[5]; // eslint-disable-line
+    switch (prefix) {
+      case 'int':case 'uint':
+        if (coder) {
+          throw new Error(invalidTypeErrorMessage);
+        }
+        var intSize = parseInt(part[3] || 256); // eslint-disable-line
+        if (intSize === 0 || intSize > 256 || intSize % 8 !== 0) {
+          throw new Error('[ethjs-abi] while getting param coder for type ' + type + ', invalid ' + prefix + '<N> width: ' + type);
+        }
+
+        coder = coderNumber(intSize / 8, prefix === 'int');
+        break;
+
+      case 'bool':
+        if (coder) {
+          throw new Error(invalidTypeErrorMessage);
+        }
+        coder = coderBoolean;
+        break;
+
+      case 'string':
+        if (coder) {
+          throw new Error(invalidTypeErrorMessage);
+        }
+        coder = coderString;
+        break;
+
+      case 'bytes':
+        if (coder) {
+          throw new Error(invalidTypeErrorMessage);
+        }
+        if (part[3]) {
+          var size = parseInt(part[3]); // eslint-disable-line
+          if (size === 0 || size > 32) {
+            throw new Error('[ethjs-abi] while getting param coder for prefix bytes, invalid type ' + type + ', size ' + size + ' should be 0 or greater than 32');
+          }
+          coder = coderFixedBytes(size);
+        } else {
+          coder = coderDynamicBytes;
+        }
+        break;
+
+      case 'address':
+        if (coder) {
+          throw new Error(invalidTypeErrorMessage);
+        }
+        coder = coderAddress;
+        break;
+
+      case '[]':
+        if (!coder || coder.dynamic) {
+          throw new Error(invalidTypeErrorMessage);
+        }
+        coder = coderArray(coder, -1);
+        break;
+
+      // "[0-9+]"
+      default:
+        if (!coder || coder.dynamic) {
+          throw new Error(invalidTypeErrorMessage);
+        }
+        var defaultSize = parseInt(part[6]); // eslint-disable-line
+        coder = coderArray(coder, defaultSize);
+    }
+  }
+
+  if (!coder) {
+    throw new Error(invalidTypeErrorMessage);
+  }
+  return coder;
+}
+
+module.exports = {
+  BN: BN,
+  bnToBuffer: bnToBuffer,
+  isHexString: isHexString,
+  hexOrBuffer: hexOrBuffer,
+  hexlify: hexlify,
+  stripZeros: stripZeros,
+
+  keccak256: keccak256,
+
+  getKeys: getKeys,
+  numberToBN: numberToBN,
+  coderNumber: coderNumber,
+  uint256Coder: uint256Coder,
+  coderBoolean: coderBoolean,
+  coderFixedBytes: coderFixedBytes,
+  coderAddress: coderAddress,
+  coderDynamicBytes: coderDynamicBytes,
+  coderString: coderString,
+  coderArray: coderArray,
+  paramTypePart: paramTypePart,
+  getParamCoder: getParamCoder
+};
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
+
+/***/ },
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
 'use strict';
 
-var schema = __webpack_require__(22);
-var util = __webpack_require__(2);
-var numberToBN = __webpack_require__(3);
+var schema = __webpack_require__(24);
+var util = __webpack_require__(3);
+var numberToBN = __webpack_require__(2);
 var stripHexPrefix = __webpack_require__(5);
 var padToEven = util.padToEven;
 var arrayContainsArray = util.arrayContainsArray;
@@ -7565,7 +8234,7 @@ module.exports = {
 };
 
 /***/ },
-/* 16 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7580,7 +8249,7 @@ module.exports = {
  */
 
 // workaround to use httpprovider in different envs
-var XHR2 = __webpack_require__(25);
+var XHR2 = __webpack_require__(27);
 
 /*
 ""
@@ -7677,14 +8346,14 @@ HttpProvider.prototype.sendAsync = function (payload, callback) {
 module.exports = HttpProvider;
 
 /***/ },
-/* 17 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 'use strict';
 
-var format = __webpack_require__(15);
-var EthRPC = __webpack_require__(18);
+var format = __webpack_require__(17);
+var EthRPC = __webpack_require__(20);
 
 module.exports = Eth;
 
@@ -7794,7 +8463,7 @@ function generateFnFor(method, methodObject) {
 }
 
 /***/ },
-/* 18 */
+/* 20 */
 /***/ function(module, exports) {
 
 "use strict";
@@ -7895,14 +8564,14 @@ function createPayload(data, id) {
 }
 
 /***/ },
-/* 19 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 'use strict';
 
 var BN = __webpack_require__(1);
-var numberToBN = __webpack_require__(3);
+var numberToBN = __webpack_require__(2);
 
 var zero = new BN(0);
 var negative1 = new BN(-1);
@@ -8069,7 +8738,7 @@ module.exports = {
 };
 
 /***/ },
-/* 20 */
+/* 22 */
 /***/ function(module, exports) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -8159,7 +8828,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ },
-/* 21 */
+/* 23 */
 /***/ function(module, exports) {
 
 var toString = {}.toString;
@@ -8170,7 +8839,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ },
-/* 22 */
+/* 24 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -8801,7 +9470,7 @@ module.exports = {
 };
 
 /***/ },
-/* 23 */
+/* 25 */
 /***/ function(module, exports) {
 
 // shim for using process in browser
@@ -8991,7 +9660,7 @@ process.umask = function() { return 0; };
 
 
 /***/ },
-/* 24 */
+/* 26 */
 /***/ function(module, exports) {
 
 module.exports = function(module) {
@@ -9017,17 +9686,17 @@ module.exports = function(module) {
 
 
 /***/ },
-/* 25 */
+/* 27 */
 /***/ function(module, exports) {
 
 module.exports = XMLHttpRequest;
 
 
 /***/ },
-/* 26 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(10);
+module.exports = __webpack_require__(9);
 
 
 /***/ }
